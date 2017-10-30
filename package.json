@@ -1,0 +1,16 @@
+{
+  "name": "twitroll",
+  "version": "0.0.1",
+  "description": "twitter troll",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4",
+    "twit": "^2.2.9"
+  }
+}
