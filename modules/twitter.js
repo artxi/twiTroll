@@ -24,6 +24,12 @@ stream.on('tweet', (newTweet) => {
 	}
 });
 
+function tweetText(text) {
+	Twitter.post('statuses/update', { status: text }, (err, data, response) => {
+		console.log(`Tweeted ${data.text}`);
+	})
+}
+
 function getTargetIds() {
 	let targetIds = [];
 	targets.forEach((target) => {
@@ -74,5 +80,6 @@ function updateTargetJson() {
 module.exports = {
 	getEventEmitter: () => EventEmitter,
 	getCurrentTargets: () => targets,
-	addUserData: (user) => addNewTarget(user)
+	addUserData: (user) => addNewTarget(user),
+	tweetText: (text) => tweetText(text)
 }

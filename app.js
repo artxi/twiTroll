@@ -4,10 +4,15 @@ const Server = require('http').Server(App);
 const Io = require('socket.io')(Server);
 const Path = require('path');
 const JsonFile = require('jsonfile');
+const Scheduler = require('node-schedule');
 
 const Twitter = require('./modules/twitter');
 
 let browserSocket;
+
+Scheduler.scheduleJob('30 11 11 * * *', function() {
+	Twitter.tweetText("11:11");
+});
 
 Twitter.getEventEmitter()
 	.on('newTweet', newTweet => {
