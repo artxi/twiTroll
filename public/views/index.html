@@ -7,9 +7,10 @@
 
 <body>
 	<div id='targetInsert'>
-		<input type='text' id='newTargetName' />
-		<input type='button' id='newTargetBtn' value='Add' />
-		<label id='errorLabel' />
+		<button id='openModal'>Add target</button>
+		<div id='addTargetModal'>
+			<input type='button' id='closeModal' value='X' />
+		</div>
 	</div>
 	<div id='currentTargets'>
 	</div>
@@ -17,5 +18,6 @@
 <script src='/socket.io/socket.io.js'></script>
 <script src='js/vendor/jquery.min.js'></script>
 <script src='js/app.js'></script>
+<script src='js/modal.js'></script>
 
 </html>

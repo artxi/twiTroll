@@ -2,3 +2,16 @@
 	display: none;
 	color: red;
 }
+
+#addTargetModal {
+	display: none;
+	margin: 15% auto;
+	border: 1px solid black;
+	width: 40%;
+	height: auto;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+#closeModal {
+	float: right;
+}
