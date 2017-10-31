@@ -6,13 +6,16 @@ const Path = require('path');
 const JsonFile = require('jsonfile');
 const Scheduler = require('node-schedule');
 
+const Settings = require('./config/settings');
 const Twitter = require('./modules/twitter');
 
 let browserSocket;
 
-Scheduler.scheduleJob('30 11 11 * * *', function() {
-	Twitter.tweetText("11:11");
-});
+if (Settings['enable_11:11']) {
+	Scheduler.scheduleJob('30 11 11 * * *', function() {
+		Twitter.tweetText("11:11");
+	});
+}
 
 Twitter.getEventEmitter()
 	.on('newTweet', newTweet => {
@@ -60,4 +63,4 @@ App.get('/', (req, res) => {
 
 App.use(Express.static('public'));
 
-Server.listen(3001);
+Server.listen(Settings.port || 3000);
