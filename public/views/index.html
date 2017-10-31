@@ -1,15 +1,21 @@
 <html>
 
-	<head>
-		<title>twiTroll</title>
-	</head>
+<head>
+	<title>twiTroll</title>
+	<link rel='stylesheet' href='styles/main.css'>
+</head>
 
-	<body>
-		
-	</body>
-
-	<script src="/socket.io/socket.io.js"></script>
-	<script src='js/vendor/jquery.min.js'></script>
-	<script src="js/app.js"></script>
+<body>
+	<div id='targetInsert'>
+		<input type='text' id='newTargetName' />
+		<input type='button' id='newTargetBtn' value='Add' />
+		<label id='errorLabel' />
+	</div>
+	<div id='currentTargets'>
+	</div>
+</body>
+<script src='/socket.io/socket.io.js'></script>
+<script src='js/vendor/jquery.min.js'></script>
+<script src='js/app.js'></script>
 
 </html>
