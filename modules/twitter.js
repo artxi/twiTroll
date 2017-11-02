@@ -17,10 +17,14 @@ stream.on('tweet', (newTweet) => {
 			if (newTweet.in_reply_to_status_id || (newTweet.is_quote_status && (!newTweet.text || newTweet.text === ''))) {
 				Logger.log('It\'s a reply :(');
 			} else {
-				EventEmitter.emit('newTweet', {
-					newTweet: newTweet,
-					target: getTargetByIdStr(newTweet.user.id_str)
-				});
+				if (getTargetByIdStr(newTweet.user.id_str).enabled) {
+					EventEmitter.emit('newTweet', {
+						newTweet: newTweet,
+						target: getTargetByIdStr(newTweet.user.id_str)
+					});
+				} else {
+					Logger.log(`${newTweet.user.name} blocked us :(`);
+				}
 			}
 		}
 	} else {
@@ -68,7 +72,7 @@ function addNewTarget(formData) {
 	} else {
 		Twitter.get('users/show', { screen_name: formData.screen_name }, function(err, data, response) {
 			if (data && !data.errors) {
-				Logger.log(`Adding ${data.name} as target`)
+				Logger.log(`Adding ${data.name} as target`);
 				targets.push({
 					"id": data.id_str,
 					"screen_name": data.screen_name,
