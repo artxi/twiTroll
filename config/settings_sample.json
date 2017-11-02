@@ -1,5 +1,11 @@
 {
 	"port": 0,
 	"enable_11:11": false,
-	"replyInterval": [30, 180]
+	"replyTimeoutMinMax": [30, 180],
+	"log": {
+		"path": "",
+		"maxSize": "30m",
+		"sizeCheckInterval": "1h",
+		"maxStoredFiles": 10
+	}
 }

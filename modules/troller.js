@@ -1,13 +1,15 @@
 const Twitter = require('./twitter');
 
+const Logger = require('./logger');
+
 module.exports = {
 	troll: (target, tweet) => {
 		switch (target.mode) {
-			case "mimimi":
+			case 'mimimi':
 				Twitter.replyText(target, tweet, mimimiText(tweet.text));
 				break;
 			default:
-				console.log("Mode not found");
+				Logger.warn('Mode not found');
 				break;
 		}
 	}

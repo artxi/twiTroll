@@ -3,17 +3,19 @@ const Twitter = new Twit(require('../config/auth'));
 const Events = require('events');
 const EventEmitter = new Events.EventEmitter();
 
+const Logger = require('./logger');
+
 let targets = require('../config/targets');
 let stream = Twitter.stream('statuses/filter', { follow: getTargetIds(), tweet_mode: 'extended' });
 
 stream.on('tweet', (newTweet) => {
 	if (checkUserIdStr(newTweet.user.id_str)) {
-		console.log(`New tweet from ${newTweet.user.name}!`);
+		Logger.log(`New tweet from ${newTweet.user.name}!`);
 		if (newTweet.retweeted_status || newTweet.text.substring(0, 2) === 'RT') {
-			console.log('It\'s a retweet :(');
+			Logger.log('It\'s a retweet :(');
 		} else {
 			if (newTweet.is_quote_status || newTweet.in_reply_to_status_id) {
-				console.log('It\'s a reply :(');
+				Logger.log('It\'s a reply :(');
 			} else {
 				EventEmitter.emit('newTweet', {
 					newTweet: newTweet,
@@ -22,13 +24,16 @@ stream.on('tweet', (newTweet) => {
 			}
 		}
 	} else {
-		console.log('Just interaction');
+		Logger.log('Just interaction');
 	}
 });
 
 function tweetText(text) {
 	Twitter.post('statuses/update', { status: text }, (err, data, response) => {
-		console.log(`Tweeted ${data.text}!`);
+		if (err) {
+			Logger.error(err);
+		}
+		Logger.log(`Tweeted ${data.text}!`);
 	})
 }
 
@@ -37,7 +42,7 @@ function replyText(target, tweet, text) {
 		in_reply_to_status_id: tweet.id_str,
 		status: getFirst140('@' + target.screen_name + ' ' + text)
 	}, (err, data, response) => {
-		console.log(`Tweeted ${data.text}!`);
+		Logger.log(`Tweeted ${data.text}!`);
 	})
 }
 
