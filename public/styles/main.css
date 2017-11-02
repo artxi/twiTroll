@@ -9,9 +9,5 @@
 	border: 1px solid black;
 	width: 40%;
 	height: auto;
-	background-color: rgba(0, 0, 0, 0.4);
-}
-
-#closeModal {
-	float: right;
+	background-color: rgba(0, 0, 0, 0.2);
 }
