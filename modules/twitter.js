@@ -14,7 +14,7 @@ stream.on('tweet', (newTweet) => {
 		if (newTweet.retweeted_status || newTweet.text.substring(0, 2) === 'RT') {
 			Logger.log('It\'s a retweet :(');
 		} else {
-			if (newTweet.is_quote_status || newTweet.in_reply_to_status_id) {
+			if (newTweet.in_reply_to_status_id || (newTweet.is_quote_status && (!newTweet.text || newTweet.text === ''))) {
 				Logger.log('It\'s a reply :(');
 			} else {
 				EventEmitter.emit('newTweet', {
@@ -24,7 +24,7 @@ stream.on('tweet', (newTweet) => {
 			}
 		}
 	} else {
-		Logger.log('Just interaction');
+		//Logger.log('Just interaction');
 	}
 });
 
@@ -55,7 +55,9 @@ function getTargetByIdStr(idStr) {
 function getTargetIds() {
 	let targetIds = [];
 	targets.forEach((target) => {
-		targetIds.push(target.id)
+		if (target.enabled) {
+			targetIds.push(target.id);
+		}
 	});
 	return targetIds;
 }
