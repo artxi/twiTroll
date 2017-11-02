@@ -15,8 +15,10 @@ stream.on('tweet', (newTweet) => {
 			if (newTweet.is_quote_status || newTweet.in_reply_to_status_id) {
 				console.log('It\'s a reply :(');
 			} else {
-				EventEmitter.emit('newTweet', newTweet)
-				console.log(`Trolling ${newTweet.user.name}`);
+				EventEmitter.emit('newTweet', {
+					newTweet: newTweet,
+					target: getTargetByIdStr(newTweet.user.id_str)
+				});
 			}
 		}
 	} else {
@@ -26,8 +28,23 @@ stream.on('tweet', (newTweet) => {
 
 function tweetText(text) {
 	Twitter.post('statuses/update', { status: text }, (err, data, response) => {
-		console.log(`Tweeted ${data.text}`);
+		console.log(`Tweeted ${data.text}!`);
 	})
+}
+
+function replyText(target, tweet, text) {
+	Twitter.post('statuses/update', {
+		in_reply_to_status_id: tweet.id_str,
+		status: getFirst140('@' + target.screen_name + ' ' + text)
+	}, (err, data, response) => {
+		console.log(`Tweeted ${data.text}!`);
+	})
+}
+
+function getTargetByIdStr(idStr) {
+	return targets.filter((target) => {
+		return target.id === idStr;
+	})[0];
 }
 
 function getTargetIds() {
@@ -38,11 +55,11 @@ function getTargetIds() {
 	return targetIds;
 }
 
-function addNewTarget(screen_name) {
-	if (checkUserScreenName(screen_name)) {
-		EventEmitter.emit('targetExists', screen_name);
+function addNewTarget(formData) {
+	if (checkUserScreenName(formData.screen_name)) {
+		EventEmitter.emit('targetExists', formData.screen_name);
 	} else {
-		Twitter.get('users/show', { screen_name: screen_name }, function(err, data, response) {
+		Twitter.get('users/show', { screen_name: formData.screen_name }, function(err, data, response) {
 			if (data && !data.errors) {
 				targets.push({
 					"id": data.id_str,
@@ -50,12 +67,13 @@ function addNewTarget(screen_name) {
 					"name": data.name,
 					"image": data.profile_image_url,
 					"background": data.profile_background_image_url,
-					"enabled": true
+					"enabled": true,
+					"mode": formData.mode
 				});
 				EventEmitter.emit('targetAdded', targets)
 				updateTargetJson();
 			} else {
-				EventEmitter.emit('targetNotFound', screen_name);
+				EventEmitter.emit('targetNotFound', formData.screen_name);
 			}
 		});
 	}
@@ -77,9 +95,14 @@ function updateTargetJson() {
 	EventEmitter.emit('updateTargetJson', targets)
 }
 
+function getFirst140(text) {
+	return (text.length > 140) ? text.substring(0, 140) : text;
+}
+
 module.exports = {
 	getEventEmitter: () => EventEmitter,
 	getCurrentTargets: () => targets,
-	addUserData: (user) => addNewTarget(user),
-	tweetText: (text) => tweetText(text)
+	addUserData: (data) => addNewTarget(data),
+	tweetText: (text) => tweetText(text),
+	replyText: (target, tweet, text) => replyText(target, tweet, text)
 }

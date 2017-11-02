@@ -8,6 +8,7 @@ const Scheduler = require('node-schedule');
 
 const Settings = require('./config/settings');
 const Twitter = require('./modules/twitter');
+const Troller = require('./modules/troller');
 
 let browserSocket;
 
@@ -18,8 +19,12 @@ if (Settings['enable_11:11']) {
 }
 
 Twitter.getEventEmitter()
-	.on('newTweet', newTweet => {
-		console.log(newTweet.text);
+	.on('newTweet', data => {
+		let timeout = Math.floor(Math.random() * (Settings.replyTimeoutMinMax[1]) - Settings.replyTimeoutMinMax[0] + 1) + Settings.replyTimeoutMinMax[0];
+		console.log(`Trolling ${data.target.name} in ${timeout} seconds`);
+		setTimeout(() => {
+			Troller.troll(data.target, data.newTweet);
+		}, timeout * 1000);
 	})
 	.on('updateTargetJson', targets => {
 		saveJson('config/targets.json', targets)

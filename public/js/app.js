@@ -25,5 +25,8 @@ function fillCurrentTargets(targets) {
 }
 
 $('#newTargetBtn').click(() => {
-	Socket.emit('addNewTarget', $('#newTargetName').val().trim())
+	Socket.emit('addNewTarget', {
+		screen_name: $('#newTargetName').val().trim(),
+		mode: $('#modeSelect').find(":selected").text()
+	})
 });

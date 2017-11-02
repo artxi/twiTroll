@@ -1,4 +1,5 @@
 {
 	"port": 0,
-	"enable_11:11": false
+	"enable_11:11": false,
+	"replyInterval": [30, 180]
 }
