@@ -68,6 +68,7 @@ function addNewTarget(formData) {
 	} else {
 		Twitter.get('users/show', { screen_name: formData.screen_name }, function(err, data, response) {
 			if (data && !data.errors) {
+				Logger.log(`Adding ${data.name} as target`)
 				targets.push({
 					"id": data.id_str,
 					"screen_name": data.screen_name,
