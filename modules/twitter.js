@@ -4,7 +4,7 @@ const Events = require('events');
 const EventEmitter = new Events.EventEmitter();
 
 let targets = require('../config/targets');
-let stream = Twitter.stream('statuses/filter', { follow: getTargetIds() });
+let stream = Twitter.stream('statuses/filter', { follow: getTargetIds(), tweet_mode: 'extended' });
 
 stream.on('tweet', (newTweet) => {
 	if (checkUserIdStr(newTweet.user.id_str)) {
