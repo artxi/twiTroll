@@ -91,7 +91,7 @@ function addNewTarget(formData) {
 
 function checkUserScreenName(screen_name) {
 	return targets.some(function(target) {
-		return target.screen_name === screen_name;
+		return target.screen_name.toLowerCase() === screen_name.toLowerCase();
 	});
 }
 
