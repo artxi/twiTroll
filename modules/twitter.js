@@ -59,9 +59,7 @@ function getTargetByIdStr(idStr) {
 function getTargetIds() {
 	let targetIds = [];
 	targets.forEach((target) => {
-		if (target.enabled) {
-			targetIds.push(target.id);
-		}
+		targetIds.push(target.id);
 	});
 	return targetIds;
 }
