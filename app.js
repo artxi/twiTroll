@@ -4,6 +4,7 @@ const Server = require('http').Server(App);
 const Io = require('socket.io')(Server);
 const Path = require('path');
 const JsonFile = require('jsonfile');
+const Fs = require('fs');
 const Scheduler = require('node-schedule');
 
 const Settings = require('./config/settings');
@@ -15,6 +16,15 @@ Logger.printInitInfo();
 
 let browserSocket;
 
+createTargetDataDir();
+
+function createTargetDataDir() {
+	let targetDir = './target_data';
+	if (!Fs.existsSync(targetDir)) {
+		Fs.mkdirSync(targetDir);
+	}
+}
+
 if (Settings['enable_11:11']) {
 	Scheduler.scheduleJob('30 11 11 * * *', function() {
 		Twitter.tweetText('11:11');
@@ -23,11 +33,16 @@ if (Settings['enable_11:11']) {
 
 Twitter.getEventEmitter()
 	.on('newTweet', data => {
-		let timeout = Math.floor(Math.random() * (Settings.replyTimeoutMinMax[1]) - Settings.replyTimeoutMinMax[0] + 1) + Settings.replyTimeoutMinMax[0];
-		Logger.log(`Trolling ${data.target.name} in ${timeout} seconds`);
-		setTimeout(() => {
+		if (data.target.mySelf) {
+			Logger.log('Trolling myself');
 			Troller.troll(data.target, data.newTweet);
-		}, timeout * 1000);
+		} else {
+			let timeout = Math.floor(Math.random() * (Settings.replyTimeoutMinMax[1]) - Settings.replyTimeoutMinMax[0] + 1) + Settings.replyTimeoutMinMax[0];
+			Logger.log(`Trolling ${data.target.name} in ${timeout} seconds`);
+			setTimeout(() => {
+				Troller.troll(data.target, data.newTweet);
+			}, timeout * 1000);
+		}
 	})
 	.on('updateTargetJson', targets => {
 		saveJson('config/targets.json', targets)

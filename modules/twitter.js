@@ -2,6 +2,7 @@ const Twit = require('twit');
 const Twitter = new Twit(require('../config/auth'));
 const Events = require('events');
 const EventEmitter = new Events.EventEmitter();
+const Fs = require('fs');
 
 const Logger = require('./logger');
 
@@ -47,7 +48,32 @@ function replyText(target, tweet, text) {
 		status: getFirst140('@' + target.screen_name + ' ' + text)
 	}, (err, data, response) => {
 		Logger.log(`Tweeted ${data.text}!`);
-	})
+	});
+}
+
+function replyImage(target, tweet, image) {
+	var b64content = Fs.readFileSync(image, { encoding: 'base64' });
+	Twitter.post('media/upload', {
+		media_data: b64content
+	}, (err, data, response) => {
+		if (err) {
+			Logger.error('ERROR:');
+			Logger.error(err);
+		} else {
+			Twitter.post('statuses/update', {
+				media_ids: new Array(data.media_id_string),
+				in_reply_to_status_id: tweet.id_str,
+				status: '@' + target.screen_name + ' '
+			}, (err, data, response) => {
+				if (err) {
+					Logger.error('ERROR:');
+					Logger.error(err);
+				} else {
+					Logger.log(`Replied ${target.name} with an image!`);
+				}
+			});
+		}
+	});
 }
 
 function getTargetByIdStr(idStr) {
@@ -81,12 +107,17 @@ function addNewTarget(formData) {
 					"mode": formData.mode
 				});
 				EventEmitter.emit('targetAdded', targets)
+				createTargetDataDir(target.screen_name);
 				updateTargetJson();
 			} else {
 				EventEmitter.emit('targetNotFound', formData.screen_name);
 			}
 		});
 	}
+}
+
+function createTargetDataDir(name) {
+
 }
 
 function checkUserScreenName(screen_name) {
@@ -114,5 +145,6 @@ module.exports = {
 	getCurrentTargets: () => targets,
 	addUserData: (data) => addNewTarget(data),
 	tweetText: (text) => tweetText(text),
-	replyText: (target, tweet, text) => replyText(target, tweet, text)
+	replyText: (target, tweet, text) => replyText(target, tweet, text),
+	replyImage: (target, tweet, image) => replyImage(target, tweet, image)
 }

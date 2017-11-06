@@ -2,3 +2,4 @@ node_modules/
 config/auth.json
 config/targets.json
 config/settings.json
+target_data
