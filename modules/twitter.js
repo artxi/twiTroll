@@ -48,11 +48,11 @@ function replyText(target, tweet, text) {
 		status: getFirst140('@' + target.screen_name + ' ' + text)
 	}, (err, data, response) => {
 		if (err) {
-			Logger.warning(`BLOCKED? ${err}`)
-			target.blocked = true;
-			updateTargetJson();
+			Logger.warn(`BLOCKED? ${err}`)
+			/*target.blocked = true;
+			updateTargetJson();*/
 		} else {
-			Logger.log(`Tweeted ${err}!`);
+			Logger.log(`Tweeted ${data.text}!`);
 		}
 	});
 }
