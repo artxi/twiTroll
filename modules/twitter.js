@@ -39,7 +39,7 @@ function tweetText(text) {
 			Logger.error(err);
 		}
 		Logger.log(`Tweeted ${data.text}!`);
-	})
+	});
 }
 
 function replyText(target, tweet, text) {
@@ -47,7 +47,13 @@ function replyText(target, tweet, text) {
 		in_reply_to_status_id: tweet.id_str,
 		status: getFirst140('@' + target.screen_name + ' ' + text)
 	}, (err, data, response) => {
-		Logger.log(`Tweeted ${data.text}!`);
+		if (err) {
+			Logger.warning(`BLOCKED? ${err}`)
+			target.blocked = true;
+			updateTargetJson();
+		} else {
+			Logger.log(`Tweeted ${err}!`);
+		}
 	});
 }
 
@@ -99,16 +105,16 @@ function addNewTarget(formData) {
 				createTargetDataDir(data.screen_name);
 				Logger.log(`Adding ${data.name} as target`);
 				targets.push({
-					"id": data.id_str,
-					"screen_name": data.screen_name,
-					"name": data.name,
-					"image": data.profile_image_url,
-					"background": data.profile_background_image_url,
-					"enabled": true,
-					"mode": formData.mode
+					'id': data.id_str,
+					'screen_name': data.screen_name,
+					'name': data.name,
+					'image': data.profile_image_url,
+					'background': data.profile_background_image_url,
+					'enabled': true,
+					'blocked': false,
+					'mode': formData.mode
 				});
-				EventEmitter.emit('targetAdded', targets)				
-				updateTargetJson();
+				followUser(data)
 			} else {
 				EventEmitter.emit('targetNotFound', formData.screen_name);
 			}
@@ -116,11 +122,22 @@ function addNewTarget(formData) {
 	}
 }
 
+function followUser(userData) {
+	Logger.log(`Following ${userData.name} :)`);
+	Twitter.post('friendships/create', { user_id: userData.id_str }, (err, data, response) => {
+		if (err) {
+			Logger.error(err);
+		}		
+		EventEmitter.emit('targetAdded', targets)
+		updateTargetJson();
+	});
+}
+
 function createTargetDataDir(name) {
 	let targetDir = './target_data/' + name;
 	if (!Fs.existsSync(targetDir)) {
 		Fs.mkdirSync(targetDir);
-		Fs.mkdirSync(targetDir+'/images')
+		Fs.mkdirSync(targetDir + '/images');
 	}
 }
 
