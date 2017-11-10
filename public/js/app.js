@@ -27,8 +27,6 @@ function fillCurrentTargets(users) {
 }
 
 function showNewUser(user) {
-	console.log(user);
-
 	let userDiv = document.createElement('div');
 	userDiv.className = 'userDiv';
 	userDiv.id = user.screen_name;
@@ -64,7 +62,8 @@ function showNewUser(user) {
 	userData.appendChild(trollMode);
 	userDiv.appendChild(userData);
 
-	document.getElementById('currentTargets').appendChild(userDiv);;
+	document.getElementById('currentTargets').appendChild(userDiv);
+	$('#newTargetName').val('');
 }
 
 $('#newTargetBtn').click(() => {
