@@ -47,8 +47,8 @@ Twitter.getEventEmitter()
 	.on('updateTargetJson', targets => {
 		saveJson('config/targets.json', targets)
 	})
-	.on('targetAdded', targets => {
-		browserSocket.emit('currentTargets', targets);
+	.on('targetAdded', user => {
+		Io.emit('targetAdded', user);
 	})
 	.on('targetExists', () => {
 		browserSocket.emit('targetExists');
@@ -70,7 +70,9 @@ function saveJson(file, data) {
 }
 
 function setSocketEvents(socket) {
-	browserSocket = socket;
+	if (!browserSocket) {
+		browserSocket = socket;
+	}
 	socket
 		.on('getCurrentTargets', () => {
 			socket.emit('currentTargets', Twitter.getCurrentTargets());

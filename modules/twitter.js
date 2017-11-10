@@ -109,12 +109,12 @@ function addNewTarget(formData) {
 					'screen_name': data.screen_name,
 					'name': data.name,
 					'image': data.profile_image_url,
-					'background': data.profile_background_image_url,
+					'background': data.profile_banner_url,
 					'enabled': true,
 					'blocked': false,
 					'mode': formData.mode
 				});
-				followUser(data)
+				followUser(data);
 			} else {
 				EventEmitter.emit('targetNotFound', formData.screen_name);
 			}
@@ -126,9 +126,9 @@ function followUser(userData) {
 	Logger.log(`Following ${userData.name} :)`);
 	Twitter.post('friendships/create', { user_id: userData.id_str }, (err, data, response) => {
 		if (err) {
-			Logger.error(err);
-		}		
-		EventEmitter.emit('targetAdded', targets)
+			Logger.warn(err);
+		}
+		EventEmitter.emit('targetAdded', getTargetByIdStr(userData.id_str))
 		updateTargetJson();
 	});
 }
