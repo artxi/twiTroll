@@ -5,6 +5,9 @@ const Logger = require('./logger');
 
 module.exports = {
 	troll: (target, tweet) => {
+		if (tweet.extended_tweet && tweet.extended_tweet.full_text && tweet.extended_tweet.full_text !== '') {
+			tweet.text = tweet.extended_tweet.full_text;
+		}
 		switch (target.mode) {
 			case 'mimimi':
 				Twitter.replyText(target, tweet, mimimiText(tweet.text));
@@ -29,7 +32,8 @@ function getRandomImageForTarget(target, tweet) {
 }
 
 function mimimiText(baseText) {
-	return baseText.replace(/[aeou]/g, 'i')
+	return baseText
+		.replace(/[aeou]/g, 'i')
 		.replace(/[áéóú]/g, 'í')
 		.replace(/[äëöü]/g, 'ï')
 		.replace(/[àèòù]/g, 'ì')

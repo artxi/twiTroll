@@ -45,14 +45,18 @@ function tweetText(text) {
 function replyText(target, tweet, text) {
 	Twitter.post('statuses/update', {
 		in_reply_to_status_id: tweet.id_str,
-		status: getFirst140('@' + target.screen_name + ' ' + text)
+		status: getFirst280('@' + target.screen_name + ' ' + text)
 	}, (err, data, response) => {
 		if (err) {
 			Logger.warn(`BLOCKED? ${err}`)
-			/*target.blocked = true;
-			updateTargetJson();*/
+			//target.blocked = true;
+			//updateTargetJson();
 		} else {
-			Logger.log(`Tweeted ${data.text}!`);
+			if (data.extended_tweet && data.extended_tweet.full_text && data.extended_tweet.full_text !== '') {
+				Logger.log(`Tweeted ${data.extended_tweet.full_text}!`);
+			} else {
+				Logger.log(`Tweeted ${data.text}!`);
+			}
 		}
 	});
 }
@@ -157,8 +161,8 @@ function updateTargetJson() {
 	EventEmitter.emit('updateTargetJson', targets)
 }
 
-function getFirst140(text) {
-	return (text.length > 140) ? text.substring(0, 140) : text;
+function getFirst280(text) {
+	return (text.length > 280) ? text.substring(0, 280) : text;
 }
 
 module.exports = {

@@ -14,8 +14,6 @@ const Logger = require('./modules/logger');
 
 Logger.printInitInfo();
 
-let browserSocket;
-
 createTargetDataDir();
 
 function createTargetDataDir() {
@@ -51,10 +49,10 @@ Twitter.getEventEmitter()
 		Io.emit('targetAdded', user);
 	})
 	.on('targetExists', () => {
-		browserSocket.emit('targetExists');
+		Io.emit('targetExists');
 	})
 	.on('targetNotFound', () => {
-		browserSocket.emit('targetNotFound');
+		Io.emit('targetNotFound');
 	});
 
 Io.on('connection', socket => {
@@ -66,13 +64,10 @@ function saveJson(file, data) {
 		if (err) {
 			Logger.error(err);
 		}
-	})
+	});
 }
 
 function setSocketEvents(socket) {
-	if (!browserSocket) {
-		browserSocket = socket;
-	}
 	socket
 		.on('getCurrentTargets', () => {
 			socket.emit('currentTargets', Twitter.getCurrentTargets());
