@@ -31,15 +31,25 @@ function getRandomImageForTarget(target, tweet) {
 	});
 }
 
+
 function mimimiText(baseText) {
-	return baseText
-		.replace(/[aeou]/g, 'i')
-		.replace(/[áéóú]/g, 'í')
-		.replace(/[äëöü]/g, 'ï')
-		.replace(/[àèòù]/g, 'ì')
-		.replace(/[AEOU]/g, 'I')
-		.replace(/[ÁÉÓÚ]/g, 'Í')
-		.replace(/[ÄËÖÜ]/g, 'Ï')
-		.replace(/[ÀÈÒÙ]/g, 'Ì')
-		.replace(/(?:https?|ftp):\/[\n\S]+/g, '');
+	baseText = baseText.replace(/(?:https?|ftp):\/[\n\S]+/g, '').trim();
+	let wordArray = baseText.split(' ');
+	let finalText = [];
+	wordArray.forEach((word) => {
+		if (word[0] === '@') {
+			finalText.push(word);
+		} else {
+			finalText.push(word
+				.replace(/[aeou]/g, 'i')
+				.replace(/[áéóú]/g, 'í')
+				.replace(/[äëöü]/g, 'ï')
+				.replace(/[àèòù]/g, 'ì')
+				.replace(/[AEOU]/g, 'I')
+				.replace(/[ÁÉÓÚ]/g, 'Í')
+				.replace(/[ÄËÖÜ]/g, 'Ï')
+				.replace(/[ÀÈÒÙ]/g, 'Ì'));
+		}
+	});
+	return finalText.join(' ');
 }

@@ -32,8 +32,8 @@ if (Settings['enable_11:11']) {
 Twitter.getEventEmitter()
 	.on('newTweet', data => {
 		if (data.target.mySelf) {
-			Logger.log('Trolling myself');
-			//Troller.troll(data.target, data.newTweet);
+			//Logger.log('Trolling myself');
+			Troller.troll(data.target, data.newTweet);
 		} else {
 			let timeout = Math.floor(Math.random() * (Settings.replyTimeoutMinMax[1]) - Settings.replyTimeoutMinMax[0] + 1) + Settings.replyTimeoutMinMax[0];
 			Logger.log(`Trolling ${data.target.name} in ${timeout} seconds`);
