@@ -53,6 +53,9 @@ Twitter.getEventEmitter()
 	})
 	.on('targetNotFound', () => {
 		Io.emit('targetNotFound');
+	})
+	.on('targetDeleted', (name) => {
+		Io.emit('targetDeleted', name);
 	});
 
 Io.on('connection', socket => {
@@ -74,6 +77,9 @@ function setSocketEvents(socket) {
 		})
 		.on('addNewTarget', data => {
 			Twitter.addUserData(data);
+		})
+		.on('deleteTarget', name => {
+			Twitter.deleteTarget(name);
 		});
 }
 

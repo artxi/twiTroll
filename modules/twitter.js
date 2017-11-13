@@ -53,9 +53,9 @@ function replyText(target, tweet, text) {
 			//updateTargetJson();
 		} else {
 			if (data.extended_tweet && data.extended_tweet.full_text && data.extended_tweet.full_text !== '') {
-				Logger.log(`Tweeted ${data.extended_tweet.full_text}!`);
+				Logger.log(`Tweeted: ${data.extended_tweet.full_text}`);
 			} else {
-				Logger.log(`Tweeted ${data.text}!`);
+				Logger.log(`Tweeted: ${data.text}`);
 			}
 		}
 	});
@@ -145,6 +145,16 @@ function createTargetDataDir(name) {
 	}
 }
 
+function deleteTarget(name) {
+	targets.forEach((target, index, object) => {
+		if (target.screen_name === name) {
+			object.splice(index, 1);
+			EventEmitter.emit('updateTargetJson', targets);
+			EventEmitter.emit('targetDeleted', name);
+		}
+	});
+}
+
 function checkUserScreenName(screen_name) {
 	return targets.some(function(target) {
 		return target.screen_name.toLowerCase() === screen_name.toLowerCase();
@@ -158,7 +168,7 @@ function checkUserIdStr(id) {
 }
 
 function updateTargetJson() {
-	EventEmitter.emit('updateTargetJson', targets)
+	EventEmitter.emit('updateTargetJson', targets);
 }
 
 function getFirst280(text) {
@@ -168,8 +178,9 @@ function getFirst280(text) {
 module.exports = {
 	getEventEmitter: () => EventEmitter,
 	getCurrentTargets: () => targets,
-	addUserData: (data) => addNewTarget(data),
-	tweetText: (text) => tweetText(text),
+	addUserData: data => addNewTarget(data),
+	tweetText: text => tweetText(text),
 	replyText: (target, tweet, text) => replyText(target, tweet, text),
-	replyImage: (target, tweet, image) => replyImage(target, tweet, image)
+	replyImage: (target, tweet, image) => replyImage(target, tweet, image),
+	deleteTarget: name => deleteTarget(name)
 }

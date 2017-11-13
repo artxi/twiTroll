@@ -16,6 +16,9 @@ Socket
 	})
 	.on('targetAdded', (user) => {
 		showNewUser(user);
+	})
+	.on('targetDeleted', (user) => {
+		deleteTargetDiv(user);
 	});
 
 function fillCurrentTargets(users) {
@@ -62,6 +65,13 @@ function showNewUser(user) {
 	userData.appendChild(trollMode);
 	userDiv.appendChild(userData);
 
+	let deleteButton = document.createElement('input');
+	deleteButton.className = 'deleteButton';
+	deleteButton.type = 'button';
+	deleteButton.value = 'Delete user';
+	deleteButton.onclick = () => deleteTarget(user.screen_name);
+	userDiv.appendChild(deleteButton);
+
 	document.getElementById('currentTargets').appendChild(userDiv);
 	$('#newTargetName').val('');
 }
@@ -70,5 +80,13 @@ $('#newTargetBtn').click(() => {
 	Socket.emit('addNewTarget', {
 		screen_name: $('#newTargetName').val().trim(),
 		mode: $('#modeSelect').find(":selected").text()
-	})
+	});
 });
+
+function deleteTarget(name) {
+	Socket.emit('deleteTarget', name);
+}
+
+function deleteTargetDiv(name) {
+	$(`#${name}`).remove();
+}

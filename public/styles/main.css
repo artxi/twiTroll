@@ -7,15 +7,6 @@ div {
 	color: red;
 }
 
-#addTargetModal {
-	display: none;
-	margin: 15% auto;
-	border: 1px solid black;
-	width: 40%;
-	height: auto;
-	background-color: rgba(0, 0, 0, 0.2);
-}
-
 .userDiv {
 	border: 1px solid black;
 	margin-top: 1%;
