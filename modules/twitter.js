@@ -40,25 +40,25 @@ try {
 		// Log to twitter only log
 	})
 	.on('limit', (message) => {
-		Logger.warn(message);
+		Logger.warn(JSON.stringify(message));
 	})
 	.on('connect', (message) => {
-                Logger.warn(message);
+                Logger.warn(JSON.stringify(message));
         })
 	.on('connected', (message) => {
-                Logger.warn(message);
+                Logger.warn(JSON.stringify(message));
         })
 	.on('disconnect', (message) => {
-                Logger.warn(message);
+                Logger.warn(JSON.stringify(message));
         })
 	.on('reconnect', (message) => {
-                Logger.warn(message);
+                Logger.warn(JSON.stringify(message));
         })
 	.on('warning', (message) => {
-                Logger.warn(message);
+                Logger.warn(JSON.stringify(message));
         })
 	.on('error', (message) => {
-                Logger.error(message);
+                Logger.error(JSON.stringify(message));
         });
 
 	function tweetText(text) {
