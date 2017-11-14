@@ -3,3 +3,4 @@ config/auth.json
 config/targets.json
 config/settings.json
 target_data
+nohup.out
