@@ -11,7 +11,8 @@ try {
 	let targets = require('../config/targets');
 	let stream = Twitter.stream('statuses/filter', { follow: getTargetIds(), tweet_mode: 'extended' });
 
-	stream.on('tweet', (newTweet) => {
+	stream
+		.on('tweet', (newTweet) => {
 		if (checkUserIdStr(newTweet.user.id_str)) {
 			Logger.log(`New tweet from ${newTweet.user.name}!`);
 			if (newTweet.retweeted_status || newTweet.text.substring(0, 2) === 'RT') {
@@ -33,7 +34,32 @@ try {
 		} else {
 			//Logger.log('Just interaction');
 		}
-	});
+	})
+	.on('message', (message) => {
+		// Catches any event
+		// Log to twitter only log
+	})
+	.on('limit', (message) => {
+		Logger.warn(message);
+	})
+	.on('connect', (message) => {
+                Logger.warn(message);
+        })
+	.on('connected', (message) => {
+                Logger.warn(message);
+        })
+	.on('disconnect', (message) => {
+                Logger.warn(message);
+        })
+	.on('reconnect', (message) => {
+                Logger.warn(message);
+        })
+	.on('warning', (message) => {
+                Logger.warn(message);
+        })
+	.on('error', (message) => {
+                Logger.error(message);
+        });
 
 	function tweetText(text) {
 		Twitter.post('statuses/update', { status: text }, (err, data, response) => {
