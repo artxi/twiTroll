@@ -7,11 +7,16 @@ div {
 	color: red;
 }
 
+#currentTargets {
+	display: flex;
+	flex-flow: row wrap;
+	margin: 2% 0 0 5%;
+}
+
 .userDiv {
 	border: 1px solid black;
-	margin-top: 1%;
-	width: 20%;
-	height: auto;
+	margin: 1%;
+	min-width: 400px;
 	background-color: #1A2632;
 }
 
