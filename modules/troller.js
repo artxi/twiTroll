@@ -37,7 +37,7 @@ function mimimiText(baseText) {
 	let wordArray = baseText.split(' ');
 	let finalText = [];
 	wordArray.forEach((word) => {
-		if (word[0] === '@') {
+		if (word[0] === '@' || word[0] === '#') {
 			finalText.push(word);
 		} else {
 			finalText.push(word
