@@ -1,18 +1,19 @@
-const Express = require('express');
-const App = Express();
-const Server = require('http').Server(App);
-const Io = require('socket.io')(Server);
-const Path = require('path');
-const JsonFile = require('jsonfile');
-const Fs = require('fs');
-const Scheduler = require('node-schedule');
-
-const Settings = require('./config/settings');
-const Twitter = require('./modules/twitter');
-const Troller = require('./modules/troller');
 const Logger = require('./modules/logger');
 
 try {
+
+	const Express = require('express');
+	const App = Express();
+	const Server = require('http').Server(App);
+	const Io = require('socket.io')(Server);
+	const Path = require('path');
+	const JsonFile = require('jsonfile');
+	const Fs = require('fs');
+	const Scheduler = require('node-schedule');
+
+	const Settings = require('./config/settings');
+	const Twitter = require('./modules/twitter');
+	const Troller = require('./modules/troller');
 
 	Logger.printInitInfo();
 
@@ -37,7 +38,7 @@ try {
 				//Logger.log('Trolling myself');
 				//Troller.troll(data.target, data.newTweet);
 			} else {
-				let timeout = Math.floor(Math.random() * (Settings.replyTimeoutMinMax[1]) - Settings.replyTimeoutMinMax[0] + 1) + Settings.replyTimeoutMinMax[0];
+				let timeout = Math.floor((Math.random() * (Settings.replyTimeoutMinMax[1] - Settings.replyTimeoutMinMax[0])) + Settings.replyTimeoutMinMax[0]);
 				Logger.log(`Trolling ${data.target.name} in ${timeout} seconds`);
 				setTimeout(() => {
 					Troller.troll(data.target, data.newTweet);

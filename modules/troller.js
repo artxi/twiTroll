@@ -1,9 +1,9 @@
-const Twitter = require('./twitter');
-const Fs = require('fs');
-
 const Logger = require('./logger');
 
 try {
+
+	const Twitter = require('./twitter');
+	const Fs = require('fs');
 
 	module.exports = {
 		troll: (target, tweet) => {

@@ -1,65 +1,65 @@
-const Twit = require('twit');
-const Twitter = new Twit(require('../config/auth'));
-const Events = require('events');
-const EventEmitter = new Events.EventEmitter();
-const Fs = require('fs');
-
 const Logger = require('./logger');
 
 try {
+
+	const Twit = require('twit');
+	const Twitter = new Twit(require('../config/auth'));
+	const Events = require('events');
+	const EventEmitter = new Events.EventEmitter();
+	const Fs = require('fs');
 
 	let targets = require('../config/targets');
 	let stream = Twitter.stream('statuses/filter', { follow: getTargetIds(), tweet_mode: 'extended' });
 
 	stream
 		.on('tweet', (newTweet) => {
-		if (checkUserIdStr(newTweet.user.id_str)) {
-			Logger.log(`New tweet from ${newTweet.user.name}!`);
-			if (newTweet.retweeted_status || newTweet.text.substring(0, 2) === 'RT') {
-				Logger.log('It\'s a retweet :(');
-			} else {
-				if (newTweet.in_reply_to_status_id || (newTweet.is_quote_status && (!newTweet.text || newTweet.text === ''))) {
-					Logger.log('It\'s a reply :(');
+			if (checkUserIdStr(newTweet.user.id_str)) {
+				Logger.log(`New tweet from ${newTweet.user.name}!`);
+				if (newTweet.retweeted_status || newTweet.text.substring(0, 2) === 'RT') {
+					Logger.log('It\'s a retweet :(');
 				} else {
-					if (getTargetByIdStr(newTweet.user.id_str).enabled) {
-						EventEmitter.emit('newTweet', {
-							newTweet: newTweet,
-							target: getTargetByIdStr(newTweet.user.id_str)
-						});
+					if (newTweet.in_reply_to_status_id || (newTweet.is_quote_status && (!newTweet.text || newTweet.text === ''))) {
+						Logger.log('It\'s a reply :(');
 					} else {
-						Logger.log(`${newTweet.user.name} blocked us :(`);
+						if (getTargetByIdStr(newTweet.user.id_str).enabled) {
+							EventEmitter.emit('newTweet', {
+								newTweet: newTweet,
+								target: getTargetByIdStr(newTweet.user.id_str)
+							});
+						} else {
+							Logger.log(`${newTweet.user.name} blocked us :(`);
+						}
 					}
 				}
+			} else {
+				//Logger.log('Just interaction');
 			}
-		} else {
-			//Logger.log('Just interaction');
-		}
-	})
-	.on('message', (message) => {
-		// Catches any event
-		// Log to twitter only log
-	})
-	.on('limit', (message) => {
-		Logger.warn(JSON.stringify(message));
-	})
-	.on('connect', (message) => {
-                Logger.warn(JSON.stringify(message));
-        })
-	.on('connected', (message) => {
-                Logger.warn(JSON.stringify(message));
-        })
-	.on('disconnect', (message) => {
-                Logger.warn(JSON.stringify(message));
-        })
-	.on('reconnect', (message) => {
-                Logger.warn(JSON.stringify(message));
-        })
-	.on('warning', (message) => {
-                Logger.warn(JSON.stringify(message));
-        })
-	.on('error', (message) => {
-                Logger.error(JSON.stringify(message));
-        });
+		})
+		.on('message', (message) => {
+			// Catches any event
+			// Log to twitter only log
+		})
+		.on('limit', (message) => {
+			Logger.warn(JSON.stringify(message));
+		})
+		.on('connect', (message) => {
+			Logger.warn(JSON.stringify(message));
+		})
+		.on('connected', (message) => {
+			Logger.warn(JSON.stringify(message));
+		})
+		.on('disconnect', (message) => {
+			Logger.warn(JSON.stringify(message));
+		})
+		.on('reconnect', (message) => {
+			Logger.warn(JSON.stringify(message));
+		})
+		.on('warning', (message) => {
+			Logger.warn(JSON.stringify(message));
+		})
+		.on('error', (message) => {
+			Logger.error(JSON.stringify(message));
+		});
 
 	function tweetText(text) {
 		Twitter.post('statuses/update', { status: text }, (err, data, response) => {
