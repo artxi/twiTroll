@@ -35,29 +35,32 @@ try {
 				//Logger.log('Just interaction');
 			}
 		})
-		.on('message', (message) => {
-			// Catches any event
-			// Log to twitter only log
-		})
 		.on('limit', (message) => {
+			Logger.log('Got limited on Twitter API');
 			Logger.warn(JSON.stringify(message));
 		})
 		.on('connect', (message) => {
-			Logger.warn(JSON.stringify(message));
+			Logger.log('Connecting to Twitter API...');
+			//Logger.warn(JSON.stringify(message));
 		})
 		.on('connected', (message) => {
-			Logger.warn(JSON.stringify(message));
+			Logger.log('Connected to Twitter API');
+			//Logger.warn(JSON.stringify(message));
 		})
 		.on('disconnect', (message) => {
+			Logger.log('Disconnected from Twitter API');
 			Logger.warn(JSON.stringify(message));
 		})
 		.on('reconnect', (message) => {
+			Logger.log('Reconnecting to Twitter API');
 			Logger.warn(JSON.stringify(message));
 		})
 		.on('warning', (message) => {
+			Logger.log('Warning from Twitter API');
 			Logger.warn(JSON.stringify(message));
 		})
 		.on('error', (message) => {
+			Logger.log('Error from Twitter API');
 			Logger.error(JSON.stringify(message));
 		});
 
